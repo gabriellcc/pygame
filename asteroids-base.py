@@ -26,10 +26,10 @@ class player(pygame.sprite.Sprite):
         #classe pai(sprite)
         pygame.sprite.Sprite.__init__(self)
         #carrega imagem fundo
-        player_img = pygame.image.load(path.join(img_dir, "playerShip1_orange.png))
-        sel.image = player_img
+        player_img = pygame.image.load(path.join(img_dir, "playerShip1_orange.png"))
+        self.image = player_img
         
-        self>image = pygame.tranform.scale(player_img, (50, 38))
+        self.image = pygame.transform.scale(player_img, (50, 38))
         
         self.image.set_colorkey(BLACK)
         
@@ -38,7 +38,17 @@ class player(pygame.sprite.Sprite):
         self.rect.centerx= WIDTH / 2
         self.rect.bottom = HEIGHT - 10
         
-    
+        
+        self.speedx = 0
+        
+    def update(self):
+        self.rect.x += self.speedx
+        
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.left < 0:
+            self.rect.left = 0
+            
     
 # Inicialização do Pygame.
 pygame.init()
@@ -79,11 +89,25 @@ try:
             # Verifica se foi fechado
             if event.type == pygame.QUIT:
                 running = False
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    player.speedx = -8
+                if event.key == pygame.K_RIGHT:
+                    player.speedx = 8
+                    
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    player.speedx = 0
+                if event.key == pygame.K_RIGHT:
+                    player.speedx = 0
+                    
+        all_sprites.update()        
     
         # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
         screen.blit(background, background_rect)
-        all sprites.draw(screen)
+        all_sprites.draw(screen)
         # Depois de desenhar tudo, inverte o display.
         pygame.display.flip()
         
